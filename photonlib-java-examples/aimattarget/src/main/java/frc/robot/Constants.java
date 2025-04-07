@@ -39,7 +39,7 @@ import edu.wpi.first.math.util.Units;
 
 public class Constants {
     public static class Vision {
-        public static final String kCameraName = "YOUR CAMERA NAME";
+        public static final String kCameraName = "Intel(R)_RealSense(TM)_Depth_Camera_455__RGB";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center,
         // pitched upward.
         private static final double camPitch = Units.degreesToRadians(30.0);

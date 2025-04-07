@@ -26,15 +26,25 @@ package frc.robot;
 
 import static frc.robot.Constants.Vision.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.xml.transform.OutputKeys;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.drivetrain.SwerveDrive;
 import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Robot extends TimedRobot {
     // private SwerveDrive drivetrain; // CODA commenting this out for now since this is just running on the test bed
@@ -51,10 +61,24 @@ public class Robot extends TimedRobot {
         // drivetrain = new SwerveDrive();
         camera = new PhotonCamera(kCameraName); //CODA the camera object was declared above, but here is where it's actually initialized.  
                                                 // You may need to change that kCameraName variable to match something you've set to it?
-                                                // Pro Tip: click on a variable and right click -> go to definition to see whewre it's created (or press F12)
-
+                                                // Pro Tip: click on a variable and right click -> go to definition to see whewre it's created (or press F12)                                  
         // visionSim = new VisionSim(camera);
 
+            // Optional: Add an initial Shuffleboard entry
+            Shuffleboard.getTab("Vision").addDouble("AprilTag ID", this::getAprilTagID);
+        }
+    
+        /**
+         * Get the AprilTag ID from the best target.
+         */
+        public double getAprilTagID() {
+            PhotonPipelineResult result = camera.getLatestResult();
+            if (result.hasTargets()) {
+                return result.getBestTarget().getFiducialId();
+            }
+            return -1; // No tag found
+        }
+        {
         controller = new XboxController(0);
     }
 
